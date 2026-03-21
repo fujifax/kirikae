@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アナログ業務 AI化支援 | Excel・紙業務の自動化</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1e35;
+    --navy-mid: #1a2f4a;
+    --navy-light: #243d5e;
+    --accent: #c8a96e;
+    --accent-light: #e8c98e;
+    --white: #f5f3ef;
+    --text: #e8e4dc;
+    --text-muted: #8a9ab0;
+    --border: rgba(200,169,110,0.2);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 48px;
+    background: rgba(15,30,53,0.94);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--accent); letter-spacing: 0.04em; }
+  .nav-cta {
+    background: var(--accent); color: var(--navy);
+    padding: 10px 24px; border-radius: 2px;
+    font-size: 13px; font-weight: 500; letter-spacing: 0.06em;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--accent-light); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 120px 48px 80px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -20%; right: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(200,169,110,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .hero-eyebrow { font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 24px; }
+  .hero-title { font-family: 'Noto Serif JP', serif; font-size: clamp(30px, 3.6vw, 50px); font-weight: 600; line-height: 1.5; color: var(--white); margin-bottom: 28px; }
+  .hero-title em { font-style: normal; color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 2px; }
+  .hero-lead { font-size: 15px; color: var(--text-muted); line-height: 1.9; margin-bottom: 40px; max-width: 440px; }
+  .hero-cta {
+    display: inline-block; background: var(--accent); color: var(--navy);
+    padding: 16px 40px; font-size: 14px; font-weight: 500;
+    letter-spacing: 0.08em; text-decoration: none; border-radius: 2px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .hero-cta:hover { background: var(--accent-light); transform: translateY(-1px); }
+  .hero-visual { display: flex; flex-direction: column; gap: 14px; }
+  .visual-card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .visual-card.after { border-color: rgba(200,169,110,0.4); }
+  .card-header { background: var(--navy-light); padding: 10px 16px; display: flex; gap: 6px; align-items: center; border-bottom: 1px solid var(--border); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot.r { background: #e05a5a; } .dot.y { background: #e8c96e; } .dot.g { background: #5ab87a; }
+  .card-filename { margin-left: 6px; font-size: 11px; color: var(--text-muted); }
+  .card-body { padding: 14px 18px; }
+  .card-row { display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+  .card-row span { flex: 1; }
+  .card-row.head span { color: var(--accent); font-weight: 500; }
+  .card-row.data span.num { color: var(--text); }
+  .after-body { padding: 16px 18px; }
+  .after-label { font-size: 10px; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
+  .after-text { font-size: 13px; color: var(--text); line-height: 1.7; }
+  .after-tags { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .tag { font-size: 10px; padding: 3px 10px; border-radius: 20px; background: rgba(200,169,110,0.12); color: var(--accent); letter-spacing: 0.06em; }
+  .vs-label { text-align: center; font-size: 11px; letter-spacing: 0.12em; color: var(--text-muted); }
+
+  /* Section base */
+  section { padding: 100px 48px; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label { font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; }
+  .section-title { font-family: 'Noto Serif JP', serif; font-size: clamp(24px, 2.8vw, 38px); font-weight: 600; color: var(--white); line-height: 1.5; margin-bottom: 16px; }
+  .section-lead { font-size: 15px; color: var(--text-muted); max-width: 560px; line-height: 1.9; margin-bottom: 60px; }
+  .divider { border: none; border-top: 1px solid var(--border); }
+
+  /* Pain */
+  .pain { background: var(--navy-mid); }
+  .pain-tabs { display: flex; margin-bottom: 32px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; width: fit-content; }
+  .pain-tab { padding: 10px 28px; font-size: 13px; cursor: pointer; background: transparent; border: none; color: var(--text-muted); font-family: 'Noto Sans JP', sans-serif; transition: all 0.2s; letter-spacing: 0.04em; }
+  .pain-tab.active { background: var(--accent); color: var(--navy); font-weight: 500; }
+  .pain-panel { display: none; }
+  .pain-panel.active { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .pain-item { background: var(--navy-mid); padding: 32px 28px; }
+  .pain-num { font-family: 'DM Serif Display', serif; font-size: 40px; color: rgba(200,169,110,0.18); line-height: 1; margin-bottom: 14px; }
+  .pain-text { font-size: 14px; color: var(--text); line-height: 1.8; }
+  .pain-text strong { color: var(--accent); font-weight: 500; }
+
+  /* Service */
+  .service-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+  .service-card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 8px; padding: 36px 28px; position: relative; overflow: hidden; transition: border-color 0.3s; }
+  .service-card:hover { border-color: rgba(200,169,110,0.5); }
+  .service-card::after { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); opacity: 0.6; }
+  .service-tag { font-size: 10px; letter-spacing: 0.16em; color: var(--accent); text-transform: uppercase; margin-bottom: 14px; }
+  .service-name { font-family: 'Noto Serif JP', serif; font-size: 18px; color: var(--white); margin-bottom: 14px; line-height: 1.5; }
+  .service-desc { font-size: 13px; color: var(--text-muted); line-height: 1.9; margin-bottom: 20px; }
+  .service-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .service-list li { font-size: 13px; color: var(--text-muted); padding-left: 16px; position: relative; }
+  .service-list li::before { content: '—'; position: absolute; left: 0; color: var(--accent); font-size: 11px; }
+
+  /* Process */
+  .process { background: var(--navy-mid); }
+  .process-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; }
+  .process-steps::before { content: ''; position: absolute; top: 27px; left: 12%; right: 12%; height: 1px; background: var(--border); }
+  .process-step { padding: 0 16px; text-align: center; }
+  .step-num { width: 54px; height: 54px; border-radius: 50%; background: var(--navy); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); position: relative; z-index: 1; }
+  .step-title { font-size: 14px; font-weight: 500; color: var(--white); margin-bottom: 8px; }
+  .step-desc { font-size: 12px; color: var(--text-muted); line-height: 1.8; }
+
+  /* Pricing */
+  .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+  .pricing-card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 8px; padding: 36px 28px; transition: border-color 0.3s, transform 0.3s; }
+  .pricing-card:hover { border-color: rgba(200,169,110,0.4); transform: translateY(-4px); }
+  .pricing-card.featured { border-color: var(--accent); background: var(--navy-light); }
+  .pricing-badge { font-size: 10px; letter-spacing: 0.12em; color: var(--navy); background: var(--accent); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 18px; text-transform: uppercase; }
+  .pricing-name { font-size: 12px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 8px; text-transform: uppercase; }
+  .pricing-price { font-family: 'DM Serif Display', serif; font-size: 34px; color: var(--white); line-height: 1; margin-bottom: 4px; }
+  .pricing-price span { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; color: var(--text-muted); }
+  .pricing-note { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .pricing-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .pricing-features li { font-size: 13px; color: var(--text-muted); padding-left: 18px; position: relative; }
+  .pricing-features li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-size: 11px; }
+
+  /* Form */
+  .form-section { background: var(--navy-mid); }
+  .form-inner { max-width: 720px; margin: 0 auto; }
+  .gform-wrap { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--navy); }
+  .gform-wrap iframe { display: block; width: 100%; border: none; }
+  .form-note { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 16px; line-height: 1.8; }
+
+  /* Footer */
+  footer { padding: 36px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--accent); }
+  .footer-copy { font-size: 12px; color: var(--text-muted); }
+
+  /* Animations */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:translateY(0); } }
+  .hero-eyebrow { animation: fadeUp 0.6s ease 0.1s both; }
+  .hero-title   { animation: fadeUp 0.6s ease 0.25s both; }
+  .hero-lead    { animation: fadeUp 0.6s ease 0.4s both; }
+  .hero-cta     { animation: fadeUp 0.6s ease 0.55s both; }
+  .hero-visual  { animation: fadeUp 0.8s ease 0.3s both; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 14px 24px; }
+    section { padding: 72px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+    .pain-panel.active { grid-template-columns: 1fr; }
+    .service-grid { grid-template-columns: 1fr; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 36px; }
+    .process-steps::before { display: none; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">Kirikae</div>
+  <a href="#contact" class="nav-cta">無料相談はこちら</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <p class="hero-eyebrow">Excel・紙業務 AI化支援</p>
+      <h1 class="hero-title">
+        <em>Excel</em>の手作業と<br>
+        <em>紙の転記</em>から、<br>
+        解放します。
+      </h1>
+      <p class="hero-lead">
+        毎月繰り返す集計・転記・レポート作成。<br>
+        紙の申請書・伝票のデジタル化。<br>
+        AIとWebシステムの力で、担当者の時間を本来の仕事に取り戻します。
+      </p>
+      <a href="#contact" class="hero-cta">無料ヒアリングを申し込む</a>
+    </div>
+    <div class="hero-visual">
+      <div class="visual-card">
+        <div class="card-header">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="card-filename">勤怠管理_2024年11月.xlsx / 経費申請書.pdf</span>
+        </div>
+        <div class="card-body">
+          <div class="card-row head"><span>氏名</span><span>出勤日数</span><span>残業</span></div>
+          <div class="card-row data"><span>山田 太郎</span><span class="num">21</span><span class="num">14.5h</span></div>
+          <div class="card-row data"><span>佐藤 花子</span><span class="num">20</span><span class="num">8.0h</span></div>
+          <div class="card-row data"><span>鈴木 一郎</span><span class="num">22</span><span class="num">22.0h</span></div>
+        </div>
+      </div>
+      <div class="vs-label">↓ AI化</div>
+      <div class="visual-card after">
+        <div class="after-body">
+          <div class="after-label">AI化後</div>
+          <div class="after-text">ブラウザ入力・写真アップロードで自動集計。<br>転記・手打ち作業がゼロになります。</div>
+          <div class="after-tags">
+            <span class="tag">Excel自動化</span>
+            <span class="tag">OCR読み取り</span>
+            <span class="tag">Claude API連携</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Pain -->
+<section class="pain">
+  <div class="section-inner">
+    <p class="section-label">こんなお悩みはありませんか</p>
+    <h2 class="section-title">Excel・紙業務の<br>よくある限界</h2>
+    <div class="pain-tabs">
+      <button class="pain-tab active" onclick="switchTab(event,'excel')">Excelの課題</button>
+      <button class="pain-tab" onclick="switchTab(event,'paper')">紙業務の課題</button>
+    </div>
+    <div class="pain-panels">
+      <div class="pain-panel active" id="panel-excel">
+        <div class="pain-item"><div class="pain-num">01</div><p class="pain-text">毎月<strong>同じファイルを手作業</strong>で更新し、ミスが怖くて確認に時間がかかる</p></div>
+        <div class="pain-item"><div class="pain-num">02</div><p class="pain-text">複数シート・ファイルから<strong>データをコピペ</strong>する作業が毎回発生している</p></div>
+        <div class="pain-item"><div class="pain-num">03</div><p class="pain-text">担当者しか<strong>使い方がわからない</strong>マクロが社内に積み上がっている</p></div>
+      </div>
+      <div class="pain-panel" id="panel-paper">
+        <div class="pain-item"><div class="pain-num">01</div><p class="pain-text">紙の申請書・伝票を<strong>手でシステムに入力</strong>する作業が毎日発生している</p></div>
+        <div class="pain-item"><div class="pain-num">02</div><p class="pain-text">領収書・納品書の<strong>ファイリングと検索</strong>に時間がかかり、過去の書類が探せない</p></div>
+        <div class="pain-item"><div class="pain-num">03</div><p class="pain-text">承認フローが<strong>属人化</strong>していて、担当者不在のときに業務が止まる</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Service -->
+<section>
+  <div class="section-inner">
+    <p class="section-label">提供サービス</p>
+    <h2 class="section-title">アナログ業務を<br>まるごとデジタル化</h2>
+    <p class="section-lead">Excel・紙・手作業が混在する業務を整理し、使いやすいWebシステムに置き換えます。</p>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-tag">Service 01</div>
+        <div class="service-name">業務診断・<br>改善提案</div>
+        <p class="service-desc">現状のExcel・紙業務を分析し、AI化・自動化できる箇所を整理した提案書を納品します。</p>
+        <ul class="service-list">
+          <li>Excel・PDF・紙業務の診断</li>
+          <li>業務フロー可視化</li>
+          <li>改善提案書（PDF納品）</li>
+          <li>オンライン説明30分付き</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-tag">Service 02</div>
+        <div class="service-name">Excel業務<br>Webアプリ化</div>
+        <p class="service-desc">勤怠・経費・在庫・シフト管理など、Excelで行っている業務をブラウザで動くWebアプリに移行します。</p>
+        <ul class="service-list">
+          <li>要件定義・ヒアリング込み</li>
+          <li>入力・集計・出力のWeb化</li>
+          <li>操作マニュアル・引き継ぎ</li>
+          <li>月次保守オプションあり</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-tag">Service 03</div>
+        <div class="service-name">紙業務<br>OCR・DX化</div>
+        <p class="service-desc">領収書・申請書・伝票などの紙をAI-OCRで自動読み取りし、システムへの入力作業を自動化します。</p>
+        <ul class="service-list">
+          <li>紙・PDF写真からのAI読み取り</li>
+          <li>データ抽出・CSV出力</li>
+          <li>既存システムへの連携対応</li>
+          <li>月次保守オプションあり</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Process -->
+<section class="process">
+  <div class="section-inner">
+    <p class="section-label">ご依頼の流れ</p>
+    <h2 class="section-title">4ステップで完了</h2>
+    <p class="section-lead">小さく始めて、確実に進めます。スコープを明確にしてから着手するのでご安心ください。</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-num">1</div>
+        <div class="step-title">無料ヒアリング</div>
+        <p class="step-desc">現状の業務フローと課題をオンラインでお聞きします（30〜60分）</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">2</div>
+        <div class="step-title">提案・お見積もり</div>
+        <p class="step-desc">解決する範囲と納品物を明確にした提案書をご提示します</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">3</div>
+        <div class="step-title">開発・確認</div>
+        <p class="step-desc">進捗を共有しながら開発。途中確認で認識のズレを防ぎます</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">4</div>
+        <div class="step-title">納品・引き継ぎ</div>
+        <p class="step-desc">操作説明・マニュアル付きで納品。運用保守もご相談可能です</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Pricing -->
+<section>
+  <div class="section-inner">
+    <p class="section-label">料金目安</p>
+    <h2 class="section-title">規模に合わせて<br>選べる3プラン</h2>
+    <p class="section-lead">すべて税別表示です。詳細はヒアリング後にお見積もりします。</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">診断プラン</div>
+        <div class="pricing-price">¥30,000<span> 〜</span></div>
+        <div class="pricing-note">業務診断 + 改善提案書</div>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li>Excel・紙業務の診断</li>
+          <li>業務フロー分析レポート</li>
+          <li>AI化・自動化の提案</li>
+          <li>オンライン説明30分</li>
+        </ul>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">人気</div>
+        <div class="pricing-name">スモールプラン</div>
+        <div class="pricing-price">¥150,000<span> 〜</span></div>
+        <div class="pricing-note">業務1〜2点のAI化・Web化</div>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li>要件定義・ヒアリング込み</li>
+          <li>Webアプリ or OCR自動化構築</li>
+          <li>操作マニュアル納品</li>
+          <li>納品後2週間サポート</li>
+          <li>月額保守オプションあり</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">スタンダードプラン</div>
+        <div class="pricing-price">¥400,000<span> 〜</span></div>
+        <div class="pricing-note">複数業務の連携・運用サポート込み</div>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li>Excel・紙業務の複合対応</li>
+          <li>承認フロー・通知機能</li>
+          <li>CSV・帳票出力対応</li>
+          <li>月次保守サポート3ヶ月</li>
+          <li>追加機能相談対応</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Form -->
+<section class="form-section" id="contact">
+  <div class="section-inner">
+    <div class="form-inner">
+      <p class="section-label" style="text-align:center">お問い合わせ</p>
+      <h2 class="section-title" style="text-align:center">まずは無料で<br>ご相談ください</h2>
+      <p class="section-lead" style="text-align:center; margin: 0 auto 40px;">
+        Excel・紙業務のお悩みをお気軽にご相談ください。<br>
+        ヒアリング後に具体的なご提案をお送りします。
+      </p>
+      <!--
+        Googleフォームの埋め込み手順:
+        1. Googleフォームを作成
+        2. 「送信」→「埋め込み」タブ → URLをコピー
+        3. 下記 src の YOUR_FORM_ID を差し替える
+        例: https://docs.google.com/forms/d/e/1FAIpQLSxxxxxxxx/viewform?embedded=true
+      -->
+      <div class="gform-wrap">
+        <iframe
+          src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true"
+          height="760"
+          title="お問い合わせフォーム">
+          読み込んでいます…
+        </iframe>
+      </div>
+      <p class="form-note">
+        通常2営業日以内にご返信いたします。<br>
+        いただいた情報は問い合わせ対応以外には使用しません。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">Kirikae</div>
+  <div class="footer-copy">© 2024 Kirikae. All rights reserved.</div>
+</footer>
+
+<script>
+function switchTab(e, type) {
+  document.querySelectorAll('.pain-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pain-panel').forEach(p => p.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById('panel-' + type).classList.add('active');
+}
+</script>
+
+</body>
+</html>
