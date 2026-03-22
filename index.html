@@ -3,252 +3,377 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>アナログ業務 AI化支援 | Excel・紙業務の自動化</title>
+<title>Kirikae｜Excel・紙業務の効率化・DX支援</title>
+<meta name="description" content="Excel手作業・紙の転記をWebシステムと自動化で解決。中小企業向けの業務効率化・DX支援サービス。まずは無料ヒアリングから。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 <style>
   :root {
-    --navy: #0f1e35;
-    --navy-mid: #1a2f4a;
-    --navy-light: #243d5e;
-    --accent: #c8a96e;
-    --accent-light: #e8c98e;
-    --white: #f5f3ef;
-    --text: #e8e4dc;
-    --text-muted: #8a9ab0;
-    --border: rgba(200,169,110,0.2);
+    --navy:       #0c1a2e;
+    --navy-mid:   #162538;
+    --navy-light: #1f3450;
+    --navy-card:  #172030;
+    --accent:     #c8a96e;
+    --accent-lt:  #e2c68a;
+    --accent-dim: rgba(200,169,110,0.15);
+    --white:      #f4f1eb;
+    --text:       #ddd9d0;
+    --muted:      #7a8ea8;
+    --border:     rgba(200,169,110,0.18);
+    --border-md:  rgba(200,169,110,0.32);
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--navy);
-    color: var(--text);
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 16px;
-    line-height: 1.8;
-    overflow-x: hidden;
-  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--navy); color:var(--text); font-family:'Noto Sans JP',sans-serif; font-size:16px; line-height:1.8; overflow-x:hidden; }
 
-  /* Nav */
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:var(--navy); }
+  ::-webkit-scrollbar-thumb { background:var(--border-md); border-radius:2px; }
+
+  /* ── Nav ── */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 18px 48px;
-    background: rgba(15,30,53,0.94);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:0 56px; height:60px;
+    background:rgba(12,26,46,0.96); backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    transition:box-shadow 0.3s;
   }
-  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--accent); letter-spacing: 0.04em; }
+  nav.scrolled { box-shadow:0 4px 32px rgba(0,0,0,0.3); }
+  .nav-logo { font-family:'DM Serif Display',serif; font-size:20px; color:var(--accent); letter-spacing:0.06em; }
+  .nav-links { display:flex; gap:36px; list-style:none; }
+  .nav-links a { font-size:13px; color:var(--muted); text-decoration:none; letter-spacing:0.06em; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--accent); }
   .nav-cta {
-    background: var(--accent); color: var(--navy);
-    padding: 10px 24px; border-radius: 2px;
-    font-size: 13px; font-weight: 500; letter-spacing: 0.06em;
-    text-decoration: none; transition: background 0.2s;
+    background:var(--accent); color:var(--navy);
+    padding:9px 22px; border-radius:2px;
+    font-size:13px; font-weight:500; letter-spacing:0.08em;
+    text-decoration:none; transition:background 0.2s, transform 0.15s;
   }
-  .nav-cta:hover { background: var(--accent-light); }
+  .nav-cta:hover { background:var(--accent-lt); transform:translateY(-1px); }
 
-  /* Hero */
+  /* ── Hero ── */
   .hero {
-    min-height: 100vh; display: flex; align-items: center;
-    padding: 120px 48px 80px; position: relative; overflow: hidden;
+    min-height:100vh; display:flex; align-items:center;
+    padding:100px 56px 80px; position:relative; overflow:hidden;
   }
   .hero::before {
-    content: ''; position: absolute; top: -20%; right: -10%;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(200,169,110,0.07) 0%, transparent 70%);
-    pointer-events: none;
+    content:''; position:absolute; top:-10%; right:-5%;
+    width:700px; height:700px;
+    background:radial-gradient(circle, rgba(200,169,110,0.06) 0%, transparent 65%);
+    pointer-events:none;
   }
-  .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .hero-eyebrow { font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 24px; }
-  .hero-title { font-family: 'Noto Serif JP', serif; font-size: clamp(30px, 3.6vw, 50px); font-weight: 600; line-height: 1.5; color: var(--white); margin-bottom: 28px; }
-  .hero-title em { font-style: normal; color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 2px; }
-  .hero-lead { font-size: 15px; color: var(--text-muted); line-height: 1.9; margin-bottom: 40px; max-width: 440px; }
-  .hero-cta {
-    display: inline-block; background: var(--accent); color: var(--navy);
-    padding: 16px 40px; font-size: 14px; font-weight: 500;
-    letter-spacing: 0.08em; text-decoration: none; border-radius: 2px;
-    transition: background 0.2s, transform 0.2s;
+  .hero::after {
+    content:''; position:absolute; bottom:-20%; left:-10%;
+    width:500px; height:500px;
+    background:radial-gradient(circle, rgba(23,50,80,0.8) 0%, transparent 70%);
+    pointer-events:none;
   }
-  .hero-cta:hover { background: var(--accent-light); transform: translateY(-1px); }
-  .hero-visual { display: flex; flex-direction: column; gap: 14px; }
-  .visual-card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .visual-card.after { border-color: rgba(200,169,110,0.4); }
-  .card-header { background: var(--navy-light); padding: 10px 16px; display: flex; gap: 6px; align-items: center; border-bottom: 1px solid var(--border); }
-  .dot { width: 9px; height: 9px; border-radius: 50%; }
-  .dot.r { background: #e05a5a; } .dot.y { background: #e8c96e; } .dot.g { background: #5ab87a; }
-  .card-filename { margin-left: 6px; font-size: 11px; color: var(--text-muted); }
-  .card-body { padding: 14px 18px; }
-  .card-row { display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
-  .card-row span { flex: 1; }
-  .card-row.head span { color: var(--accent); font-weight: 500; }
-  .card-row.data span.num { color: var(--text); }
-  .after-body { padding: 16px 18px; }
-  .after-label { font-size: 10px; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
-  .after-text { font-size: 13px; color: var(--text); line-height: 1.7; }
-  .after-tags { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-  .tag { font-size: 10px; padding: 3px 10px; border-radius: 20px; background: rgba(200,169,110,0.12); color: var(--accent); letter-spacing: 0.06em; }
-  .vs-label { text-align: center; font-size: 11px; letter-spacing: 0.12em; color: var(--text-muted); }
+  .hero-inner { max-width:1120px; margin:0 auto; width:100%; display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; position:relative; z-index:1; }
+  .hero-eyebrow { font-size:11px; letter-spacing:0.24em; color:var(--accent); text-transform:uppercase; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+  .hero-eyebrow::before { content:''; display:block; width:24px; height:1px; background:var(--accent); }
+  .hero-title { font-family:'Noto Serif JP',serif; font-size:clamp(28px,3.4vw,48px); font-weight:600; line-height:1.55; color:var(--white); margin-bottom:24px; }
+  .hero-title em { font-style:normal; color:var(--accent); }
+  .hero-lead { font-size:15px; color:var(--muted); line-height:2; margin-bottom:16px; max-width:420px; }
+  .hero-sub { font-size:13px; color:var(--muted); opacity:0.7; line-height:1.8; margin-bottom:40px; max-width:420px; border-left:2px solid var(--border-md); padding-left:14px; }
+  .hero-actions { display:flex; align-items:center; gap:24px; }
+  .btn-primary {
+    display:inline-block; background:var(--accent); color:var(--navy);
+    padding:15px 36px; font-size:14px; font-weight:500;
+    letter-spacing:0.08em; text-decoration:none; border-radius:2px;
+    transition:background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background:var(--accent-lt); transform:translateY(-2px); }
+  .btn-ghost { font-size:13px; color:var(--muted); text-decoration:none; letter-spacing:0.06em; border-bottom:1px solid var(--border-md); padding-bottom:2px; transition:color 0.2s; }
+  .btn-ghost:hover { color:var(--accent); }
 
-  /* Section base */
-  section { padding: 100px 48px; }
-  .section-inner { max-width: 1100px; margin: 0 auto; }
-  .section-label { font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; }
-  .section-title { font-family: 'Noto Serif JP', serif; font-size: clamp(24px, 2.8vw, 38px); font-weight: 600; color: var(--white); line-height: 1.5; margin-bottom: 16px; }
-  .section-lead { font-size: 15px; color: var(--text-muted); max-width: 560px; line-height: 1.9; margin-bottom: 60px; }
-  .divider { border: none; border-top: 1px solid var(--border); }
+  /* Hero visual */
+  .hero-visual { display:flex; flex-direction:column; gap:12px; }
+  .vcard { background:var(--navy-card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .vcard.highlight { border-color:var(--border-md); box-shadow:0 0 0 1px rgba(200,169,110,0.08); }
+  .vcard-head { background:var(--navy-light); padding:10px 16px; display:flex; gap:6px; align-items:center; border-bottom:1px solid var(--border); }
+  .dot { width:8px; height:8px; border-radius:50%; }
+  .dot.r{background:#d9534f;} .dot.y{background:#d4a843;} .dot.g{background:#4caf73;}
+  .vcard-fname { margin-left:8px; font-size:11px; color:var(--muted); }
+  .vcard-body { padding:14px 18px; }
+  .vrow { display:grid; grid-template-columns:2fr 1fr 1fr; gap:8px; font-size:11px; margin-bottom:5px; color:var(--muted); }
+  .vrow.hd span { color:var(--accent); font-weight:500; }
+  .vrow.dt span.v { color:var(--text); }
+  .vtag-wrap { padding:14px 18px; display:flex; gap:8px; flex-wrap:wrap; }
+  .vtag { font-size:10px; padding:4px 11px; border-radius:20px; background:var(--accent-dim); color:var(--accent); letter-spacing:0.06em; }
+  .vafter { padding:16px 18px; }
+  .vafter-label { font-size:10px; letter-spacing:0.16em; color:var(--accent); text-transform:uppercase; margin-bottom:8px; }
+  .vafter-text { font-size:13px; color:var(--text); line-height:1.75; }
+  .varrow { text-align:center; font-size:11px; color:var(--muted); letter-spacing:0.1em; padding:2px 0; }
 
-  /* Pain */
-  .pain { background: var(--navy-mid); }
-  .pain-tabs { display: flex; margin-bottom: 32px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; width: fit-content; }
-  .pain-tab { padding: 10px 28px; font-size: 13px; cursor: pointer; background: transparent; border: none; color: var(--text-muted); font-family: 'Noto Sans JP', sans-serif; transition: all 0.2s; letter-spacing: 0.04em; }
-  .pain-tab.active { background: var(--accent); color: var(--navy); font-weight: 500; }
-  .pain-panel { display: none; }
-  .pain-panel.active { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .pain-item { background: var(--navy-mid); padding: 32px 28px; }
-  .pain-num { font-family: 'DM Serif Display', serif; font-size: 40px; color: rgba(200,169,110,0.18); line-height: 1; margin-bottom: 14px; }
-  .pain-text { font-size: 14px; color: var(--text); line-height: 1.8; }
-  .pain-text strong { color: var(--accent); font-weight: 500; }
+  /* ── Stats bar ── */
+  .stats-bar { background:var(--navy-mid); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .stats-inner { max-width:1120px; margin:0 auto; padding:36px 56px; display:grid; grid-template-columns:repeat(4,1fr); gap:0; }
+  .stat-item { text-align:center; padding:0 20px; border-right:1px solid var(--border); }
+  .stat-item:last-child { border-right:none; }
+  .stat-num { font-family:'DM Serif Display',serif; font-size:36px; color:var(--accent); line-height:1; margin-bottom:6px; }
+  .stat-label { font-size:12px; color:var(--muted); letter-spacing:0.06em; }
 
-  /* Service */
-  .service-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
-  .service-card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 8px; padding: 36px 28px; position: relative; overflow: hidden; transition: border-color 0.3s; }
-  .service-card:hover { border-color: rgba(200,169,110,0.5); }
-  .service-card::after { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); opacity: 0.6; }
-  .service-tag { font-size: 10px; letter-spacing: 0.16em; color: var(--accent); text-transform: uppercase; margin-bottom: 14px; }
-  .service-name { font-family: 'Noto Serif JP', serif; font-size: 18px; color: var(--white); margin-bottom: 14px; line-height: 1.5; }
-  .service-desc { font-size: 13px; color: var(--text-muted); line-height: 1.9; margin-bottom: 20px; }
-  .service-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-  .service-list li { font-size: 13px; color: var(--text-muted); padding-left: 16px; position: relative; }
-  .service-list li::before { content: '—'; position: absolute; left: 0; color: var(--accent); font-size: 11px; }
+  /* ── Section base ── */
+  section { padding:96px 56px; }
+  .section-inner { max-width:1120px; margin:0 auto; }
+  .section-eyebrow { font-size:11px; letter-spacing:0.22em; color:var(--accent); text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .section-eyebrow::before { content:''; display:block; width:20px; height:1px; background:var(--accent); }
+  .section-title { font-family:'Noto Serif JP',serif; font-size:clamp(22px,2.6vw,36px); font-weight:600; color:var(--white); line-height:1.5; margin-bottom:14px; }
+  .section-lead { font-size:15px; color:var(--muted); max-width:520px; line-height:2; margin-bottom:56px; }
+  .divider { border:none; border-top:1px solid var(--border); }
 
-  /* Process */
-  .process { background: var(--navy-mid); }
-  .process-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; }
-  .process-steps::before { content: ''; position: absolute; top: 27px; left: 12%; right: 12%; height: 1px; background: var(--border); }
-  .process-step { padding: 0 16px; text-align: center; }
-  .step-num { width: 54px; height: 54px; border-radius: 50%; background: var(--navy); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); position: relative; z-index: 1; }
-  .step-title { font-size: 14px; font-weight: 500; color: var(--white); margin-bottom: 8px; }
-  .step-desc { font-size: 12px; color: var(--text-muted); line-height: 1.8; }
+  /* ── Pain ── */
+  .pain { background:var(--navy-mid); }
+  .pain-tabs { display:flex; margin-bottom:28px; border:1px solid var(--border); border-radius:4px; overflow:hidden; width:fit-content; }
+  .pain-tab { padding:10px 28px; font-size:13px; cursor:pointer; background:transparent; border:none; color:var(--muted); font-family:'Noto Sans JP',sans-serif; transition:all 0.2s; letter-spacing:0.04em; }
+  .pain-tab.active { background:var(--accent); color:var(--navy); font-weight:500; }
+  .pain-panel { display:none; }
+  .pain-panel.active { display:grid; grid-template-columns:repeat(3,1fr); }
+  .pain-item { padding:36px 32px; border:1px solid var(--border); border-radius:8px; background:var(--navy-card); margin:0 8px 0 0; }
+  .pain-item:last-child { margin-right:0; }
+  .pain-num { font-family:'DM Serif Display',serif; font-size:44px; color:rgba(200,169,110,0.14); line-height:1; margin-bottom:16px; }
+  .pain-text { font-size:14px; color:var(--text); line-height:1.85; }
+  .pain-text strong { color:var(--accent); font-weight:500; }
 
-  /* Pricing */
-  .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
-  .pricing-card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 8px; padding: 36px 28px; transition: border-color 0.3s, transform 0.3s; }
-  .pricing-card:hover { border-color: rgba(200,169,110,0.4); transform: translateY(-4px); }
-  .pricing-card.featured { border-color: var(--accent); background: var(--navy-light); }
-  .pricing-badge { font-size: 10px; letter-spacing: 0.12em; color: var(--navy); background: var(--accent); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 18px; text-transform: uppercase; }
-  .pricing-name { font-size: 12px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 8px; text-transform: uppercase; }
-  .pricing-price { font-family: 'DM Serif Display', serif; font-size: 34px; color: var(--white); line-height: 1; margin-bottom: 4px; }
-  .pricing-price span { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; color: var(--text-muted); }
-  .pricing-note { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
-  .pricing-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
-  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 9px; }
-  .pricing-features li { font-size: 13px; color: var(--text-muted); padding-left: 18px; position: relative; }
-  .pricing-features li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-size: 11px; }
+  /* ── Why ── */
+  .why-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .why-card { background:var(--navy-mid); border:1px solid var(--border); border-radius:8px; padding:32px 28px; position:relative; overflow:hidden; }
+  .why-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--accent) 0%, transparent 100%); opacity:0.5; }
+  .why-icon { font-size:32px; margin-bottom:16px; display:block; color:var(--accent); }
+  .material-symbols-outlined { font-size:32px; color:var(--accent); display:block; margin-bottom:16px; font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 40; }
+  .why-title { font-size:15px; font-weight:500; color:var(--white); margin-bottom:10px; }
+  .why-desc { font-size:13px; color:var(--muted); line-height:1.85; }
 
-  /* Form */
-  .form-section { background: var(--navy-mid); }
-  .form-inner { max-width: 680px; margin: 0 auto; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-  .form-group { display: flex; flex-direction: column; gap: 8px; }
-  .form-group.full { grid-column: 1 / -1; }
-  label { font-size: 11px; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
+  /* ── Service ── */
+  .service-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .service-card { background:var(--navy-mid); border:1px solid var(--border); border-radius:8px; padding:36px 28px; position:relative; overflow:hidden; transition:border-color 0.3s, transform 0.3s; }
+  .service-card:hover { border-color:var(--border-md); transform:translateY(-3px); }
+  .service-card::after { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--accent); opacity:0.5; }
+  .service-num { font-family:'DM Serif Display',serif; font-size:13px; color:var(--accent); letter-spacing:0.1em; margin-bottom:12px; opacity:0.7; }
+  .service-name { font-family:'Noto Serif JP',serif; font-size:18px; color:var(--white); margin-bottom:12px; line-height:1.5; }
+  .service-desc { font-size:13px; color:var(--muted); line-height:1.9; margin-bottom:20px; }
+  .service-list { list-style:none; display:flex; flex-direction:column; gap:7px; }
+  .service-list li { font-size:13px; color:var(--muted); padding-left:16px; position:relative; }
+  .service-list li::before { content:'—'; position:absolute; left:0; color:var(--accent); font-size:11px; top:1px; }
+
+  /* ── Process ── */
+  .process { background:var(--navy-mid); }
+  .process-steps { display:grid; grid-template-columns:repeat(4,1fr); position:relative; }
+  .process-steps::before { content:''; position:absolute; top:26px; left:12.5%; right:12.5%; height:1px; background:var(--border); }
+  .process-step { padding:0 14px; text-align:center; }
+  .step-num { width:52px; height:52px; border-radius:50%; background:var(--navy); border:1px solid var(--accent); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-family:'DM Serif Display',serif; font-size:19px; color:var(--accent); position:relative; z-index:1; }
+  .step-title { font-size:14px; font-weight:500; color:var(--white); margin-bottom:8px; }
+  .step-desc { font-size:12px; color:var(--muted); line-height:1.85; }
+
+  /* ── Pricing ── */
+  .pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-bottom:28px; }
+  .pricing-card { background:var(--navy-mid); border:1px solid var(--border); border-radius:8px; padding:36px 28px; transition:border-color 0.3s, transform 0.3s; }
+  .pricing-card:hover { border-color:var(--border-md); transform:translateY(-4px); }
+  .pricing-card.featured { border-color:var(--accent); background:var(--navy-light); }
+  .pricing-badge { font-size:10px; letter-spacing:0.12em; color:var(--navy); background:var(--accent); padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:18px; }
+  .pricing-name { font-size:12px; color:var(--muted); letter-spacing:0.1em; margin-bottom:8px; text-transform:uppercase; }
+  .pricing-price { font-family:'DM Serif Display',serif; font-size:34px; color:var(--white); line-height:1; margin-bottom:4px; }
+  .pricing-price span { font-family:'Noto Sans JP',sans-serif; font-size:13px; color:var(--muted); }
+  .pricing-note { font-size:12px; color:var(--muted); margin-bottom:18px; }
+  .pricing-divider { border:none; border-top:1px solid var(--border); margin:18px 0; }
+  .pricing-features { list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .pricing-features li { font-size:13px; color:var(--muted); padding-left:18px; position:relative; }
+  .pricing-features li::before { content:'✓'; position:absolute; left:0; color:var(--accent); font-size:11px; top:2px; }
+  .pricing-api-note { background:var(--navy-mid); border:1px solid var(--border); border-radius:6px; padding:16px 20px; font-size:12px; color:var(--muted); line-height:1.8; }
+  .pricing-api-note strong { color:var(--accent); font-weight:500; }
+
+  /* ── Form ── */
+  .form-section { background:var(--navy-mid); }
+  .form-inner { max-width:640px; margin:0 auto; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px; }
+  .form-group { display:flex; flex-direction:column; gap:8px; }
+  .form-group.full { grid-column:1/-1; }
+  label { font-size:11px; letter-spacing:0.12em; color:var(--accent); text-transform:uppercase; }
   input, select, textarea {
-    background: var(--navy); border: 1px solid var(--border); border-radius: 4px;
-    padding: 13px 16px; color: var(--text);
-    font-family: 'Noto Sans JP', sans-serif; font-size: 14px;
-    outline: none; transition: border-color 0.2s; width: 100%;
+    background:var(--navy); border:1px solid var(--border); border-radius:4px;
+    padding:13px 16px; color:var(--text);
+    font-family:'Noto Sans JP',sans-serif; font-size:14px;
+    outline:none; transition:border-color 0.2s, box-shadow 0.2s; width:100%;
   }
-  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-  select option { background: var(--navy); }
-  textarea { resize: vertical; min-height: 120px; }
+  input:focus, select:focus, textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(200,169,110,0.08); }
+  input::placeholder, textarea::placeholder { color:var(--muted); opacity:0.5; font-size:13px; }
+  select option { background:var(--navy); }
+  textarea { resize:vertical; min-height:120px; }
   .form-submit {
-    width: 100%; background: var(--accent); color: var(--navy); border: none;
-    padding: 17px; font-family: 'Noto Sans JP', sans-serif;
-    font-size: 14px; font-weight: 500; letter-spacing: 0.1em;
-    border-radius: 4px; cursor: pointer; margin-top: 8px;
-    transition: background 0.2s, transform 0.2s;
+    width:100%; background:var(--accent); color:var(--navy); border:none;
+    padding:17px; font-family:'Noto Sans JP',sans-serif;
+    font-size:14px; font-weight:500; letter-spacing:0.1em;
+    border-radius:4px; cursor:pointer; margin-top:4px;
+    transition:background 0.2s, transform 0.2s;
   }
-  .form-submit:hover { background: var(--accent-light); transform: translateY(-1px); }
-  .form-note { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 16px; line-height: 1.8; }
-  @media (max-width: 900px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-submit:hover { background:var(--accent-lt); transform:translateY(-1px); }
+  .form-note { font-size:12px; color:var(--muted); text-align:center; margin-top:16px; line-height:1.9; opacity:0.8; }
 
-  /* Footer */
-  footer { padding: 36px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--accent); }
-  .footer-copy { font-size: 12px; color: var(--text-muted); }
+  /* ── Footer ── */
+  footer { padding:40px 56px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+  .footer-logo { font-family:'DM Serif Display',serif; font-size:18px; color:var(--accent); letter-spacing:0.06em; }
+  .footer-tagline { font-size:12px; color:var(--muted); margin-top:4px; }
+  .footer-copy { font-size:12px; color:var(--muted); opacity:0.6; }
 
-  /* Animations */
-  @keyframes fadeUp { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:translateY(0); } }
-  .hero-eyebrow { animation: fadeUp 0.6s ease 0.1s both; }
-  .hero-title   { animation: fadeUp 0.6s ease 0.25s both; }
-  .hero-lead    { animation: fadeUp 0.6s ease 0.4s both; }
-  .hero-cta     { animation: fadeUp 0.6s ease 0.55s both; }
-  .hero-visual  { animation: fadeUp 0.8s ease 0.3s both; }
+  /* ── Animations ── */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+  .hero-eyebrow { animation:fadeUp 0.5s ease 0.1s both; }
+  .hero-title   { animation:fadeUp 0.5s ease 0.2s both; }
+  .hero-lead    { animation:fadeUp 0.5s ease 0.3s both; }
+  .hero-sub     { animation:fadeUp 0.5s ease 0.35s both; }
+  .hero-actions { animation:fadeUp 0.5s ease 0.45s both; }
+  .hero-visual  { animation:fadeUp 0.7s ease 0.25s both; }
 
-  /* Responsive */
-  @media (max-width: 900px) {
-    nav { padding: 14px 24px; }
-    section { padding: 72px 24px; }
-    .hero { padding: 100px 24px 60px; }
-    .hero-inner { grid-template-columns: 1fr; gap: 48px; }
-    .pain-panel.active { grid-template-columns: 1fr; }
-    .service-grid { grid-template-columns: 1fr; }
-    .process-steps { grid-template-columns: 1fr 1fr; gap: 36px; }
-    .process-steps::before { display: none; }
-    .pricing-grid { grid-template-columns: 1fr; }
-    footer { flex-direction: column; gap: 12px; text-align: center; }
+  /* ── Responsive ── */
+  @media (max-width:960px) {
+    nav { padding:0 24px; }
+    .nav-links { display:none; }
+    section { padding:72px 24px; }
+    .hero { padding:90px 24px 60px; }
+    .hero-inner { grid-template-columns:1fr; gap:48px; }
+    .stats-inner { grid-template-columns:repeat(2,1fr); gap:28px; padding:32px 24px; }
+    .stat-item { border-right:none; border-bottom:1px solid var(--border); padding-bottom:20px; }
+    .stat-item:nth-child(odd) { border-right:1px solid var(--border); }
+    .stat-item:last-child, .stat-item:nth-last-child(2):nth-child(odd) { border-bottom:none; }
+    .pain-panel.active { grid-template-columns:1fr; gap:12px; }
+    .pain-item { margin:0; }
+    .why-grid { grid-template-columns:1fr; }
+    .service-grid { grid-template-columns:1fr; }
+    .process-steps { grid-template-columns:1fr 1fr; gap:36px; }
+    .process-steps::before { display:none; }
+    .pricing-grid { grid-template-columns:1fr; }
+    .form-grid { grid-template-columns:1fr; }
+    footer { flex-direction:column; gap:16px; text-align:center; }
   }
 </style>
 </head>
 <body>
 
 <!-- Nav -->
-<nav>
+<nav id="nav">
   <div class="nav-logo">Kirikae</div>
-  <a href="#contact" class="nav-cta">無料相談はこちら</a>
+  <ul class="nav-links">
+    <li><a href="#pain">課題</a></li>
+    <li><a href="#service">サービス</a></li>
+    <li><a href="#pricing">料金</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">無料相談</a>
 </nav>
 
 <!-- Hero -->
 <section class="hero">
   <div class="hero-inner">
     <div>
-      <p class="hero-eyebrow">Excel・紙業務 AI化支援</p>
+      <p class="hero-eyebrow">業務効率化・DX支援</p>
       <h1 class="hero-title">
-        <em>Excel</em>の手作業と<br>
-        <em>紙の転記</em>から、<br>
-        解放します。
+        その<em>手作業</em>、<br>
+        システムに<br>
+        任せませんか。
       </h1>
       <p class="hero-lead">
-        毎月繰り返す集計・転記・レポート作成。<br>
-        紙の申請書・伝票のデジタル化。<br>
-        AIとWebシステムの力で、担当者の時間を本来の仕事に取り戻します。
+        Excelの転記・集計、紙の申請書のデータ入力——<br>
+        毎日繰り返すその作業を、Webシステムと自動化で解決します。
       </p>
-      <a href="#contact" class="hero-cta">無料ヒアリングを申し込む</a>
+      <p class="hero-sub">中小企業の業務フローに合わせて、小さく始めて確実に成果を出す。それがKirikaeのスタイルです。</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">無料ヒアリングを申し込む</a>
+        <a href="#service" class="btn-ghost">サービスを見る</a>
+      </div>
     </div>
     <div class="hero-visual">
-      <div class="visual-card">
-        <div class="card-header">
+      <div class="vcard">
+        <div class="vcard-head">
           <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-          <span class="card-filename">勤怠管理_2024年11月.xlsx / 経費申請書.pdf</span>
+          <span class="vcard-fname">勤怠管理_2024年11月.xlsx</span>
         </div>
-        <div class="card-body">
-          <div class="card-row head"><span>氏名</span><span>出勤日数</span><span>残業</span></div>
-          <div class="card-row data"><span>山田 太郎</span><span class="num">21</span><span class="num">14.5h</span></div>
-          <div class="card-row data"><span>佐藤 花子</span><span class="num">20</span><span class="num">8.0h</span></div>
-          <div class="card-row data"><span>鈴木 一郎</span><span class="num">22</span><span class="num">22.0h</span></div>
+        <div class="vcard-body">
+          <div class="vrow hd"><span>氏名</span><span>出勤日数</span><span>残業時間</span></div>
+          <div class="vrow dt"><span>山田 太郎</span><span class="v">21日</span><span class="v">14.5h</span></div>
+          <div class="vrow dt"><span>佐藤 花子</span><span class="v">20日</span><span class="v">8.0h</span></div>
+          <div class="vrow dt"><span>鈴木 一郎</span><span class="v">22日</span><span class="v">22.0h</span></div>
         </div>
       </div>
-      <div class="vs-label">↓ AI化</div>
-      <div class="visual-card after">
-        <div class="after-body">
-          <div class="after-label">AI化後</div>
-          <div class="after-text">ブラウザ入力・写真アップロードで自動集計。<br>転記・手打ち作業がゼロになります。</div>
-          <div class="after-tags">
-            <span class="tag">Excel自動化</span>
-            <span class="tag">OCR読み取り</span>
-            <span class="tag">Claude API連携</span>
-          </div>
+      <div class="varrow">↓ Kirikaeで自動化</div>
+      <div class="vcard highlight">
+        <div class="vafter">
+          <div class="vafter-label">自動化後</div>
+          <div class="vafter-text">ブラウザから入力するだけで自動集計・レポート出力。転記・手打ち作業がなくなります。</div>
+        </div>
+        <div class="vtag-wrap">
+          <span class="vtag">Excel自動化</span>
+          <span class="vtag">OCR読み取り</span>
+          <span class="vtag">Web化</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats bar -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num">30,000<span style="font-size:16px;font-family:'Noto Sans JP',sans-serif;color:var(--muted)">円〜</span></div>
+      <div class="stat-label">診断プランから始められる</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2<span style="font-size:16px;font-family:'Noto Sans JP',sans-serif;color:var(--muted)">営業日</span></div>
+      <div class="stat-label">ヒアリング後の返信目安</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4<span style="font-size:16px;font-family:'Noto Sans JP',sans-serif;color:var(--muted)">ステップ</span></div>
+      <div class="stat-label">ヒアリングから納品まで</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">0<span style="font-size:16px;font-family:'Noto Sans JP',sans-serif;color:var(--muted)">円</span></div>
+      <div class="stat-label">初回ヒアリング費用</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- Pain -->
+<section class="pain" id="pain">
+  <div class="section-inner">
+    <p class="section-eyebrow">こんなお悩みはありませんか</p>
+    <h2 class="section-title">Excel・紙業務の<br>よくある限界</h2>
+    <div class="pain-tabs">
+      <button class="pain-tab active" onclick="switchTab(event,'excel')">Excelの課題</button>
+      <button class="pain-tab" onclick="switchTab(event,'paper')">紙業務の課題</button>
+    </div>
+    <div class="pain-panels">
+      <div class="pain-panel active" id="panel-excel">
+        <div class="pain-item">
+          <div class="pain-num">01</div>
+          <p class="pain-text">毎月<strong>同じファイルを手作業</strong>で更新し、ミスが怖くて確認に時間がかかる</p>
+        </div>
+        <div class="pain-item">
+          <div class="pain-num">02</div>
+          <p class="pain-text">複数のシート・ファイルから<strong>データをコピペ</strong>する作業が毎回発生している</p>
+        </div>
+        <div class="pain-item">
+          <div class="pain-num">03</div>
+          <p class="pain-text">担当者しか<strong>使い方がわからない</strong>マクロが社内に積み上がっている</p>
+        </div>
+      </div>
+      <div class="pain-panel" id="panel-paper">
+        <div class="pain-item">
+          <div class="pain-num">01</div>
+          <p class="pain-text">紙の申請書・伝票を<strong>手でシステムに入力</strong>する作業が毎日発生している</p>
+        </div>
+        <div class="pain-item">
+          <div class="pain-num">02</div>
+          <p class="pain-text">領収書・納品書の<strong>ファイリングと検索</strong>に時間がかかり、過去の書類が探せない</p>
+        </div>
+        <div class="pain-item">
+          <div class="pain-num">03</div>
+          <p class="pain-text">承認フローが<strong>属人化</strong>していて、担当者不在のときに業務が止まる</p>
         </div>
       </div>
     </div>
@@ -257,25 +382,27 @@
 
 <hr class="divider">
 
-<!-- Pain -->
-<section class="pain">
+<!-- Why -->
+<section>
   <div class="section-inner">
-    <p class="section-label">こんなお悩みはありませんか</p>
-    <h2 class="section-title">Excel・紙業務の<br>よくある限界</h2>
-    <div class="pain-tabs">
-      <button class="pain-tab active" onclick="switchTab(event,'excel')">Excelの課題</button>
-      <button class="pain-tab" onclick="switchTab(event,'paper')">紙業務の課題</button>
-    </div>
-    <div class="pain-panels">
-      <div class="pain-panel active" id="panel-excel">
-        <div class="pain-item"><div class="pain-num">01</div><p class="pain-text">毎月<strong>同じファイルを手作業</strong>で更新し、ミスが怖くて確認に時間がかかる</p></div>
-        <div class="pain-item"><div class="pain-num">02</div><p class="pain-text">複数シート・ファイルから<strong>データをコピペ</strong>する作業が毎回発生している</p></div>
-        <div class="pain-item"><div class="pain-num">03</div><p class="pain-text">担当者しか<strong>使い方がわからない</strong>マクロが社内に積み上がっている</p></div>
+    <p class="section-eyebrow">Kirikaeが選ばれる理由</p>
+    <h2 class="section-title">3つの強み</h2>
+    <p class="section-lead">大手SaaSでは対応しきれない「ちょうどいい規模」の業務改善が得意です。</p>
+    <div class="why-grid">
+      <div class="why-card">
+        <span class="material-symbols-outlined">target</span>
+        <div class="why-title">スコープを絞って確実に納品</div>
+        <p class="why-desc">「Excelファイル1〜2点の置き換え」に絞ることで、工数爆発を防ぎ確実に成果を出します。まず小さく動かして、効果を確認してから拡張します。</p>
       </div>
-      <div class="pain-panel" id="panel-paper">
-        <div class="pain-item"><div class="pain-num">01</div><p class="pain-text">紙の申請書・伝票を<strong>手でシステムに入力</strong>する作業が毎日発生している</p></div>
-        <div class="pain-item"><div class="pain-num">02</div><p class="pain-text">領収書・納品書の<strong>ファイリングと検索</strong>に時間がかかり、過去の書類が探せない</p></div>
-        <div class="pain-item"><div class="pain-num">03</div><p class="pain-text">承認フローが<strong>属人化</strong>していて、担当者不在のときに業務が止まる</p></div>
+      <div class="why-card">
+        <span class="material-symbols-outlined">build</span>
+        <div class="why-title">既存の業務フローを壊さない</div>
+        <p class="why-desc">いきなりすべてを変えません。現在の運用を把握した上で、担当者が違和感なく移行できるシステムを設計します。</p>
+      </div>
+      <div class="why-card">
+        <span class="material-symbols-outlined">forum</span>
+        <div class="why-title">納品後も相談できる</div>
+        <p class="why-desc">納品で終わりではありません。運用中の疑問や追加要望にも対応できる保守プランを用意。長期的なパートナーとして伴走します。</p>
       </div>
     </div>
   </div>
@@ -284,26 +411,26 @@
 <hr class="divider">
 
 <!-- Service -->
-<section>
+<section id="service" style="background:var(--navy-mid)">
   <div class="section-inner">
-    <p class="section-label">提供サービス</p>
-    <h2 class="section-title">アナログ業務を<br>まるごとデジタル化</h2>
+    <p class="section-eyebrow">提供サービス</p>
+    <h2 class="section-title">業務をまるごと<br>デジタルに切り替える</h2>
     <p class="section-lead">Excel・紙・手作業が混在する業務を整理し、使いやすいWebシステムに置き換えます。</p>
     <div class="service-grid">
       <div class="service-card">
-        <div class="service-tag">Service 01</div>
+        <div class="service-num">Service 01</div>
         <div class="service-name">業務診断・<br>改善提案</div>
-        <p class="service-desc">現状のExcel・紙業務を分析し、AI化・自動化できる箇所を整理した提案書を納品します。</p>
+        <p class="service-desc">現状のExcel・紙業務を分析し、自動化・効率化できる箇所を整理した提案書を納品します。</p>
         <ul class="service-list">
           <li>Excel・PDF・紙業務の診断</li>
-          <li>業務フロー可視化</li>
+          <li>業務フロー可視化レポート</li>
           <li>改善提案書（PDF納品）</li>
           <li>オンライン説明30分付き</li>
         </ul>
       </div>
       <div class="service-card">
-        <div class="service-tag">Service 02</div>
-        <div class="service-name">Excel業務<br>Webアプリ化</div>
+        <div class="service-num">Service 02</div>
+        <div class="service-name">Excel業務<br>Webシステム化</div>
         <p class="service-desc">勤怠・経費・在庫・シフト管理など、Excelで行っている業務をブラウザで動くWebアプリに移行します。</p>
         <ul class="service-list">
           <li>要件定義・ヒアリング込み</li>
@@ -313,11 +440,11 @@
         </ul>
       </div>
       <div class="service-card">
-        <div class="service-tag">Service 03</div>
-        <div class="service-name">紙業務<br>OCR・DX化</div>
+        <div class="service-num">Service 03</div>
+        <div class="service-name">紙業務<br>OCR・デジタル化</div>
         <p class="service-desc">領収書・申請書・伝票などの紙をAI-OCRで自動読み取りし、システムへの入力作業を自動化します。</p>
         <ul class="service-list">
-          <li>紙・PDF写真からのAI読み取り</li>
+          <li>紙・PDFからのAI読み取り</li>
           <li>データ抽出・CSV出力</li>
           <li>既存システムへの連携対応</li>
           <li>月次保守オプションあり</li>
@@ -332,9 +459,9 @@
 <!-- Process -->
 <section class="process">
   <div class="section-inner">
-    <p class="section-label">ご依頼の流れ</p>
+    <p class="section-eyebrow">ご依頼の流れ</p>
     <h2 class="section-title">4ステップで完了</h2>
-    <p class="section-lead">小さく始めて、確実に進めます。スコープを明確にしてから着手するのでご安心ください。</p>
+    <p class="section-lead">スコープを明確にしてから着手するので、想定外の工数増加が起きません。</p>
     <div class="process-steps">
       <div class="process-step">
         <div class="step-num">1</div>
@@ -363,11 +490,11 @@
 <hr class="divider">
 
 <!-- Pricing -->
-<section>
+<section id="pricing">
   <div class="section-inner">
-    <p class="section-label">料金目安</p>
-    <h2 class="section-title">規模に合わせて<br>選べる3プラン</h2>
-    <p class="section-lead">すべて税別表示です。詳細はヒアリング後にお見積もりします。</p>
+    <p class="section-eyebrow">料金目安</p>
+    <h2 class="section-title">規模に合わせた<br>3つのプラン</h2>
+    <p class="section-lead">すべて税別表示です。詳細はヒアリング後に正式なお見積もりをご提示します。</p>
     <div class="pricing-grid">
       <div class="pricing-card">
         <div class="pricing-name">診断プラン</div>
@@ -377,7 +504,7 @@
         <ul class="pricing-features">
           <li>Excel・紙業務の診断</li>
           <li>業務フロー分析レポート</li>
-          <li>AI化・自動化の提案</li>
+          <li>効率化・自動化の提案</li>
           <li>オンライン説明30分</li>
         </ul>
       </div>
@@ -385,7 +512,7 @@
         <div class="pricing-badge">人気</div>
         <div class="pricing-name">スモールプラン</div>
         <div class="pricing-price">¥150,000<span> 〜</span></div>
-        <div class="pricing-note">業務1〜2点のAI化・Web化</div>
+        <div class="pricing-note">業務1〜2点のWeb化・自動化</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
           <li>要件定義・ヒアリング込み</li>
@@ -409,6 +536,10 @@
         </ul>
       </div>
     </div>
+    <div class="pricing-api-note">
+      <strong>※ AI機能（OCR・自動化）をご利用の場合について</strong><br>
+      外部AI APIの使用料（目安：月500〜3,000円程度）はお客様のご負担となります。利用量に応じて変動しますが、小規模利用では月1,000円程度に収まるケースがほとんどです。詳細はヒアリング時にご説明します。
+    </div>
   </div>
 </section>
 
@@ -418,9 +549,9 @@
 <section class="form-section" id="contact">
   <div class="section-inner">
     <div class="form-inner">
-      <p class="section-label" style="text-align:center">お問い合わせ</p>
+      <p class="section-eyebrow" style="justify-content:center">お問い合わせ</p>
       <h2 class="section-title" style="text-align:center">まずは無料で<br>ご相談ください</h2>
-      <p class="section-lead" style="text-align:center; margin: 0 auto 40px;">
+      <p class="section-lead" style="text-align:center; margin:0 auto 44px;">
         Excel・紙業務のお悩みをお気軽にご相談ください。<br>
         ヒアリング後に具体的なご提案をお送りします。
       </p>
@@ -445,7 +576,7 @@
               <option value="診断・改善提案">業務診断・改善提案</option>
               <option value="Excel Web化（単一）">Excel業務 Web化（単一）</option>
               <option value="Excel Web化（複数連携）">Excel業務 Web化（複数連携）</option>
-              <option value="紙業務 OCR・DX化">紙業務 OCR・DX化</option>
+              <option value="紙業務 OCR・デジタル化">紙業務 OCR・デジタル化</option>
               <option value="未定">まだ決まっていない</option>
             </select>
           </div>
@@ -466,7 +597,10 @@
 
 <!-- Footer -->
 <footer>
-  <div class="footer-logo">Kirikae</div>
+  <div>
+    <div class="footer-logo">Kirikae</div>
+    <div class="footer-tagline">Excel・紙業務の効率化・DX支援</div>
+  </div>
   <div class="footer-copy">© 2024 Kirikae. All rights reserved.</div>
 </footer>
 
@@ -477,6 +611,9 @@ function switchTab(e, type) {
   e.target.classList.add('active');
   document.getElementById('panel-' + type).classList.add('active');
 }
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
 </script>
 
 </body>
