@@ -951,12 +951,23 @@ window.addEventListener('scroll', () => {
     if (!overlayEl) overlayEl = buildOverlay();
     var visible = overlayEl.classList.toggle('visible');
     if (visible) {
+      // 計測を一時停止
+      totalActiveMs += Date.now() - lastActiveTs;
+      isActive = false;
+      flushDwell();
       renderContent();
       updateInterval = setInterval(function() {
         var el = document.getElementById('ka-live-time');
         if (el) el.textContent = fmtTime(getActiveMs());
       }, 1000);
     } else {
+      // 計測を再開
+      lastActiveTs = Date.now();
+      isActive = true;
+      Object.keys(sectionData).forEach(function(id) {
+        var d = sectionData[id];
+        if (d.lastEnter) d.lastEnter = Date.now();
+      });
       if (updateInterval) { clearInterval(updateInterval); updateInterval = null; }
     }
   }
